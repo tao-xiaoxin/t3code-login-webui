@@ -1,0 +1,16 @@
+        auth_request /_t3code_auth;
+        auth_request_set $t3code_bearer $upstream_http_x_t3code_upstream;
+        auth_request_set $t3code_renew_cookie $upstream_http_set_cookie;
+        add_header_inherit merge;
+        add_header Set-Cookie $t3code_renew_cookie;
+        add_header Cache-Control "private, no-store" always;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Set-Cookie;
+        proxy_set_header Authorization $t3code_bearer;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_pass http://127.0.0.1:3773;

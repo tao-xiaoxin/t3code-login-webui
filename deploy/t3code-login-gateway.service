@@ -1,0 +1,21 @@
+[Unit]
+Description=T3 Code web login gateway
+
+[Service]
+Type=simple
+DynamicUser=yes
+Group=nginx
+RuntimeDirectory=t3code-login
+RuntimeDirectoryMode=0750
+EnvironmentFile=/etc/nginx/t3code-secrets/gateway.env
+ExecStart=/usr/bin/node /opt/t3code-login/login-gateway.mjs
+Restart=on-failure
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+RestrictAddressFamilies=AF_UNIX
+UMask=0007
+
+[Install]
+WantedBy=multi-user.target

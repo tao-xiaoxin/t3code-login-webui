@@ -1,0 +1,11 @@
+{
+  "title": "登录 · T3 Code",
+  "description": "为 t3code 用户提供简洁安全的网页登录入口，方便快速登录并访问平台服务。",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

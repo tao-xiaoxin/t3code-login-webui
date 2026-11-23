@@ -1,0 +1,41 @@
+# Include this file in nginx's http context. Replace example.com and certificate paths.
+# Nginx 1.29.3+ is required for add_header_inherit in gateway-upstream.inc.
+map $http_sec_fetch_mode $t3code_renew_navigation { default no; navigate yes; }
+map $http_upgrade $connection_upgrade { default upgrade; '' close; }
+limit_req_zone $binary_remote_addr zone=t3code_login:1m rate=10r/m;
+
+server {
+    listen 80;
+    server_name t3code.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name t3code.example.com;
+    ssl_certificate /etc/ssl/example/fullchain.pem;
+    ssl_certificate_key /etc/ssl/example/privkey.pem;
+    client_max_body_size 20m;
+    access_log off;
+    proxy_http_version 1.1;
+    proxy_buffering off;
+    proxy_read_timeout 3600s;
+    proxy_send_timeout 3600s;
+    add_header Strict-Transport-Security 'max-age=31536000' always;
+    add_header X-Content-Type-Options nosniff always;
+    add_header Referrer-Policy no-referrer always;
+
+    location = /login {
+        alias /var/www/t3code-login/index.html;
+        default_type text/html;
+        add_header Cache-Control 'no-store' always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'" always;
+    }
+    location ^~ /login-assets/ {
+        root /var/www/t3code-login;
+        add_header Cache-Control 'no-store' always;
+    }
+    location = /robots.txt { root /var/www/t3code-login; }
+    include /etc/nginx/t3code-secrets/t3code-login-nginx.inc;
+}
