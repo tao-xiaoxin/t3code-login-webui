@@ -2,6 +2,29 @@
 
 为自托管的 [T3 Code](https://t3.codes/) 提供账号密码登录页。前端构建为静态文件；Node.js 网关管理会话，Nginx 验证会话并将请求转发到本机 T3 Code。此项目不是 T3 Code 官方项目。
 
+![T3 Code 登录页面](login-page.png)
+
+## AI 辅助部署
+
+可以将以下提示词交给能访问目标服务器的 AI 助手。它会先检查现有环境，再按本文档部署；涉及生产配置时需人工确认，不会自动覆盖现有站点。
+
+```text
+请阅读 https://github.com/tao-xiaoxin/t3code-login-webui 的 README 和 deploy 目录，
+在我的 Linux 服务器上部署 T3 Code 登录页。不要使用 Docker，也不要修改 T3 Code 上游代码。
+
+先检查系统、Node.js、pnpm、Nginx 版本和模块、systemd、T3 Code 监听地址、
+目标域名、TLS 证书以及现有站点配置。遇到缺失信息或生产配置冲突时先询问我，
+不要覆盖已有配置、停止其他服务或暴露 T3 Code 的本机端口。
+
+按 README 构建并运行测试，备份要修改的配置，向我说明改动及回滚方法，
+获得确认后部署网关和 Nginx。密码、令牌、Cookie、私钥和私人目录不得写入
+仓库、日志或回复；让我通过服务器上的私有环境文件设置凭据，不要让我在对话中粘贴。
+
+完成后验证 Nginx 配置、服务状态、未登录跳转和 API 拒绝、正确及错误密码、
+删除登录 Cookie 后重新登录，以及登录后 T3 Code 正常加载。报告实际结果和未验证项，
+不要把构建成功当作登录验收通过。
+```
+
 ## 安全边界
 
 - 必须使用 HTTPS。登录 Cookie 带 `Secure`、`HttpOnly` 和 `SameSite=Strict`，HTTP 不能完成登录。
